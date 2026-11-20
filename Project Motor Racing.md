@@ -1,6 +1,6 @@
 # Project Motor Racing — 车辆模型导出流程
 
-**完成日期：** 2026-11-19（基础车 71 辆 + DLC 车 52 辆，共 123 辆）
+**完成日期：** 2026-11-20（基础车 71 辆 + DLC 车 52 辆，共 123 辆）
 **输出根目录：** `D:\Games\model output\PMR output`
 **最终产物：** `<车厂>\<车型>\*_merged_textured.obj`（外观 LODA + CPIT 内饰 + SWHEEL 方向盘 合并单 OBJ，带 MTL 贴图）
 **游戏页：** [[project motor racing/Project Motor Racing|Project Motor Racing]]
@@ -126,6 +126,7 @@ python export_textured.py --dlc
 7. Blender 4.2 导入用 `bpy.ops.wm.obj_import`（`wavefront.obj.import` 会语法错误）
 8. **GAR flags=0 条目是明文**（shapes/DDS），不能 decrypt——否则 shapes version 乱值、DDS 头变 `40 05 56 34`
 9. 多词品牌（`Aston_Martin_*`）目录拆分要特判
+10. **XML 名与实体名冲突的权威规则**：实体名含 \.001\ 类后缀 → 用 XML 名（尾翼存成 \BODY_*.001\）；否则用**实体名**（GIANTS 会把 \WHEEL_LF_*\ 错写成 \WHEEL_LR_*\，Aero_8 前轮毂曾因此丢失）
 
 ---
 
