@@ -1,6 +1,6 @@
 # Project Motor Racing — 车辆模型导出流程
 
-**完成日期：** 2026-01-19（基础车 71 辆 + DLC 车 52 辆，共 123 辆）
+**完成日期：** 2026-11-19（基础车 71 辆 + DLC 车 52 辆，共 123 辆）
 **输出根目录：** `D:\Games\model output\PMR output`
 **最终产物：** `<车厂>\<车型>\*_merged_textured.obj`（外观 LODA + CPIT 内饰 + SWHEEL 方向盘 合并单 OBJ，带 MTL 贴图）
 **游戏页：** [[project motor racing/Project Motor Racing|Project Motor Racing]]
