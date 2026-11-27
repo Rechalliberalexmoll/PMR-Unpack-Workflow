@@ -4,6 +4,8 @@ Project Motor Racing（GIANTS Engine 10）车辆模型的完整提取流程与�
 
 跑完一轮的实测产出：**123 辆车**（71 台基础车 + 52 台 DLC），4,323 个部件，3,261 处 `map_Kd` 引用零缺失，10,333 张 PNG，合计 11.64 GB。
 
+适用 **Project Motor Racing v2.3.0.3（GIANTS Engine 10）** ｜ 运行环境 Python 3 + numpy + Pillow ｜ 导出物为 OBJ + MTL + PNG
+
 > 本仓库只包含自己写的解析/导出代码与流程文档，不包含任何游戏资源。GIANTS i3d / GAR 格式与游戏资源版权归 GIANTS Software 与 Project Motor Racing 开发方所有，请仅用于个人学习、mod 制作与格式互操作研究。
 
 ## 仓库内容
@@ -83,6 +85,23 @@ python src/export_textured.py --dlc              # 只导 DLC 车，约 15 分�
 - **部件名以 XML 为准**：实体名带 `.001` 后缀时用 XML 名（GIANTS 会把尾翼存成 `BODY_*.001`）；否则用实体名（GIANTS 会把 `WHEEL_LF_*` 错写成 `WHEEL_LR_*`）。
 - **Shape 节点自带 rotation 必须应用**（如 M4 的 `-0 -90 0`），否则轮胎装不到轮位。
 - 细节见 [`docs/PMR-workflow.md`](docs/PMR-workflow.md)。
+
+## 常见问题
+
+**OBJ 在 Blender 里一片黑 / 没有贴图？** `map_Kd` 是相对路径，`obj` + `mtl` + `textures\` `liveries\` `_shared\` 必须保持相对位置一起拷走。Blender 4.2 导入用 `bpy.ops.wm.obj_import`（老接口 `wavefront.obj.import` 已废弃）。
+
+**为什么有些车看不到轮子或内饰？** 这是过滤规则决定的：外观 LOD 里排除 `INTERIOR` `STEERINGWHEEL` `SWHEEL` `BLUR`，内饰与方向盘来自 CPIT / SWHEEL 文件再并入；个别车把方向盘单独存一份，已单独处理。轮胎是 Shape 自带 transform 挂上去的，若原车 LOD 藏了轮胎就会缺。
+
+**一定要用 `bin/fs-unpack.exe` 吗？** 解包 DLC 时是。原版 gar-lib 会解密 `flags=0` 的明文条目导致乱码，只有补丁版能解对；基础车直接读 `data\vehicles\` 不需要解包。
+
+**能用来导别的 GIANTS 游戏吗？** 只在 `.i3d.shapes` 版本同为 **v12** 且 GAR 布局一致时适用；模拟农场系列的 shapes 版本不同，需要改 `i3d_shapes_reader.py` 的结构解析。
+
+**导出要多久？** 全量 123 辆约 25 分钟（含 DLC 解包后扫描），单车通常十几秒。
+
+## 致谢
+
+- `.i3d.shapes` / GAR 格式研究基于 GIANTS Engine 的公开文件结构，参考了社区已有的 i3d 工具实现
+- 解包工具 [scfmod/fs-utils](https://github.com/scfmod/fs-utils)
 
 ## 许可
 
