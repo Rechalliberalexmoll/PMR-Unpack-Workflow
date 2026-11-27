@@ -1,11 +1,12 @@
 # Project Motor Racing — 车辆模型导出流程
 
+> 返回 [README](../README.md) · 换机器复现看 [REPRODUCE.md](REPRODUCE.md)
+
 **完成日期：** 2026-11-20（基础车 71 辆 + DLC 车 52 辆，共 123 辆）
 **输出根目录：** `D:\Games\model output\PMR output`
 **最终产物：** `<车厂>\<车型>\*_merged_textured.obj`（外观 LODA + CPIT 内饰 + SWHEEL 方向盘 合并单 OBJ，带 MTL 贴图）
-**游戏页：** [[project motor racing/Project Motor Racing|Project Motor Racing]]
-**工具目录：** `D:\Games\Tools\I3DShapesTool\`（导出脚本 + i3d.shapes 逆向）
-**GAR 解包工具：** `D:\Games\Tools\fs-utils-src\target\release\fs-unpack.exe`（scfmod/fs-utils 本地修复版）
+**导出脚本：** [`src/export_textured.py`](../src/export_textured.py)（附 `src/i3d_shapes_reader.py` + `src/_cipher_keys.py`）
+**GAR 解包工具：** [`bin/fs-unpack.exe`](../bin/fs-unpack.exe)（[scfmod/fs-utils](https://github.com/scfmod/fs-utils) 的本地补丁版）
 
 ---
 
@@ -27,7 +28,7 @@
 
 ### Step 1 — 解包 GAR 归档（DLC 车必需）
 
-**工具：** fs-utils（`scfmod/fs-utils`）本地修复版，Rust nightly + MinGW 编译。
+**工具：** fs-utils（`scfmod/fs-utils`）本地补丁版，Rust nightly + MinGW 编译。
 
 **关键发现（勿回归）：** GAR 文件表中 **flags=0x0 的条目（shapes/DDS/anim）是明文存储，不需要 GarCipher 解密**。原版 gar-lib 对所有条目 decrypt 导致这些文件乱码（DDS 头变 `40 05 56 34`、shapes version 乱值如 92/76）。修复：flags==0 直接复制原始字节。
 
@@ -60,7 +61,7 @@ name(i32+align4) → id(u32) → BoundingVolume(4f32) → corner → nsub → nv
 → positions → normals → tangents → UV1-4 → 顶点色 → 0x400段(nvert×32B) → ...
 ```
 
-- 解密：I3DCipher（`blender_ref\i3d_shapes_reader.py` numpy 版）
+- 解密：I3DCipher（`src/i3d_shapes_reader.py` numpy 版）
 - 校验：头部 `BoundingVolume=(cx,cy,cz,r)` 包围球 vs 解析顶点 bbox（相对误差 <0.3）
 
 ### Step 4 — 部件过滤（用户确认规则）
@@ -88,17 +89,17 @@ name(i32+align4) → id(u32) → BoundingVolume(4f32) → corner → nsub → nv
 
 ```text
 # 单车（车目录名）
-python export_textured.py Toyota_Supra_GT4
+python src/export_textured.py Toyota_Supra_GT4
 
 # 全部基础车 + DLC 车（约 25 分钟）
-python export_textured.py --all
+python src/export_textured.py --all
 
 # 仅 DLC 车（dlcS_full + dataS_full，约 15 分钟）
-python export_textured.py --dlc
+python src/export_textured.py --dlc
 ```
 
-脚本：`D:\Games\Tools\I3DShapesTool\export_textured.py`
-依赖：MIMO_PYTHON（numpy + Pillow），`blender_ref\i3d_shapes_reader.py`
+脚本：`src/export_textured.py`
+依赖：Python 3 + numpy + Pillow（`pip install -r requirements.txt`），同目录的 `src/i3d_shapes_reader.py`
 
 ---
 

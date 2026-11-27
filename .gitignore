@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 导出产物
+*_merged_textured.obj
+*_merged_textured.mtl
+textures/
+liveries/
+_shared/
+_export/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

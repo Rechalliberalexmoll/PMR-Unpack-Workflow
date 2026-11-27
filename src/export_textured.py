@@ -13,7 +13,7 @@ from xml.etree import ElementTree as ET
 from PIL import Image
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "blender_ref"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import i3d_shapes_reader as R
 
 UV_FLAGS = (0x02, 0x04, 0x08, 0x10)
